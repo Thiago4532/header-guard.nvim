@@ -7,10 +7,13 @@ M.gen_guard_name = function()
     local path = vim.fn.expand('%:p')
 
     local function get_name(pattern)
-        local match = path:match(pattern)
-        if match == nil then
+        local match1, match2 = path:match(pattern)
+        if match1 == nil then
             return nil
         end
+        local match = match2 == nil
+                    and match1
+                    or match1 .. match2
 
         return match:upper():gsub('[/.]', '_')
     end
@@ -19,7 +22,7 @@ M.gen_guard_name = function()
 
     name = get_name('.*/include(/.*)')
     if name then return name end
-    name = get_name('.*/src(/.*)')
+    name = get_name('.*/(.*)/src(/.*)')
     if name then return name end
 
     return nil
